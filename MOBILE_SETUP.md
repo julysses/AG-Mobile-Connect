@@ -15,11 +15,44 @@ You need two things installed on your Mac:
 
 ## Step 1 — Start the Bridge
 
-Open the `ag-mobile-connect` folder and **double-click** `ag_mobile_connect.command`.
+**Option A — Double-click (macOS, easiest):**
+
+Open the `ag-mobile-connect` folder and double-click `ag_mobile_connect.command`.
 
 > **macOS security warning?** Right-click the file → **Open** → click **Open** in the popup. You only have to do this once.
 
-A terminal window opens. The first time takes about 30 seconds to download one small tool automatically. You'll see progress in the terminal.
+---
+
+**Option B — Terminal commands (macOS / Linux):**
+
+Open Terminal (`Cmd + Space`, type *Terminal*, press Enter) and paste these commands one at a time:
+
+```bash
+# 1. Go to the ag-mobile-connect folder
+#    (change the path if you put it somewhere else)
+cd ~/Desktop/ag-mobile-connect
+```
+
+```bash
+# 2. Install dependencies (first time only, takes ~30 seconds)
+npm install
+```
+
+```bash
+# 3. Launch Antigravity with the remote debug port enabled
+open -a Antigravity --args --remote-debugging-port=9000
+```
+
+```bash
+# 4. Start the bridge server
+node server/index.js
+```
+
+> **Linux users:** Replace step 3 with however you launch Antigravity, adding the flag `--remote-debugging-port=9000`. Keep that terminal window open — closing it stops the server.
+
+---
+
+A terminal window stays open showing logs. The first run takes about 30 seconds to download one small tool automatically. You'll see progress printed to the terminal.
 
 ---
 
@@ -102,7 +135,12 @@ Your phone now shows all of Antigravity's panels in real time.
 
 ## Every Time After That
 
-Just double-click `ag_mobile_connect.command` on your Mac.
+**Double-click** `ag_mobile_connect.command` — or paste this into Terminal:
+
+```bash
+cd ~/Desktop/ag-mobile-connect && node server/index.js
+```
+
 Your phone app reconnects automatically.
 
 ---
@@ -119,7 +157,19 @@ Your Mac went to sleep or the server restarted. Double-click the launcher again.
 Notifications require the app to be installed to your Home Screen (Step 4 above). iOS only allows push notifications for installed PWAs, not browser tabs.
 
 **Antigravity not detected**
-Make sure Antigravity AI is open on your Mac. The launcher opens it automatically, but if it was already running before you started the launcher, you may need to quit and reopen it.
+Make sure Antigravity AI is open on your Mac. If it was already running before you started the launcher, quit it and relaunch it with the debug port:
+
+```bash
+open -a Antigravity --args --remote-debugging-port=9000
+```
 
 **Password changed between sessions**
-The password is generated fresh each launch unless you set a fixed one. To set a fixed password, open `config/default.json` and set `"password": "your-password-here"`.
+The password is generated fresh each launch unless you set a fixed one. To set a fixed password, run this once in Terminal (replace `yourpassword`):
+
+```bash
+# On macOS/Linux:
+cd ~/Desktop/ag-mobile-connect
+sed -i '' 's/"password": ""/"password": "yourpassword"/' config/default.json
+```
+
+Or open `config/default.json` in any text editor and change `"password": ""` to `"password": "yourpassword"`.
