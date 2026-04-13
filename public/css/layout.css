@@ -1,4 +1,7 @@
-/* ── App Shell ────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYOUT — Antigravity-inspired app shell
+═══════════════════════════════════════════════════════════════════════ */
+
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
@@ -12,7 +15,7 @@ body {
   height: 100dvh;
 }
 
-/* ── Login ────────────────────────────────────────────────────────────── */
+/* ── Login Screen ────────────────────────────────────────────────────── */
 .login-screen {
   display: flex;
   align-items: center;
@@ -21,21 +24,67 @@ body {
   min-height: 100dvh;
   background: var(--bg-primary);
   padding: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient gradient orbs */
+.login-screen::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(138, 180, 248, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.login-screen::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  right: -15%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(197, 138, 249, 0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .login-card {
   width: 100%;
-  max-width: 360px;
-  background: var(--bg-secondary);
+  max-width: 380px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: var(--space-xl);
+  border-radius: 20px;
+  padding: var(--space-xl) var(--space-lg);
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  animation: fadeIn 0.6s ease;
 }
 
 .login-logo {
   text-align: center;
-  margin-bottom: var(--space-lg);
-  font-size: 40px;
+  margin-bottom: var(--space-sm);
+}
+
+.login-logo-mark {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  background: var(--accent-gradient);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--bg-primary);
+  box-shadow: 0 4px 16px rgba(138, 180, 248, 0.25);
 }
 
 .login-title {
@@ -43,6 +92,10 @@ body {
   font-size: var(--text-xl);
   font-weight: 700;
   margin-bottom: var(--space-xs);
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .login-subtitle {
@@ -50,9 +103,38 @@ body {
   font-size: var(--text-sm);
   color: var(--text-secondary);
   margin-bottom: var(--space-lg);
+  line-height: 1.5;
 }
 
-/* ── App Shell Layout ─────────────────────────────────────────────────── */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.login-token-status {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-sm);
+}
+.login-token-status.connected {
+  color: var(--success);
+}
+
+/* ── App Shell ───────────────────────────────────────────────────────── */
 .app-shell {
   display: flex;
   flex-direction: column;
@@ -62,7 +144,7 @@ body {
   overflow: hidden;
 }
 
-/* ── Header ───────────────────────────────────────────────────────────── */
+/* ── Header ──────────────────────────────────────────────────────────── */
 .app-header {
   display: flex;
   align-items: center;
@@ -72,9 +154,41 @@ body {
   padding-left: calc(var(--space-md) + var(--safe-area-left));
   padding-right: calc(var(--space-md) + var(--safe-area-right));
   background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
   z-index: var(--z-header);
+  position: relative;
+}
+
+/* Subtle gradient accent line under header */
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent-blue) 50%, transparent 100%);
+  opacity: 0.3;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.header-logo-mark {
+  width: 28px;
+  height: 28px;
+  background: var(--accent-gradient);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg-primary);
 }
 
 .header-title {
@@ -95,10 +209,11 @@ body {
   border-radius: 50%;
   background: var(--text-muted);
   flex-shrink: 0;
+  transition: background var(--transition-normal);
 }
-.status-dot.connected    { background: var(--success); }
+.status-dot.connected    { background: var(--success); box-shadow: 0 0 6px rgba(129, 201, 149, 0.4); }
 .status-dot.disconnected { background: var(--error); }
-.status-dot.connecting   { background: var(--warning); animation: pulse 1s infinite; }
+.status-dot.connecting   { background: var(--warning); animation: breathe 1.5s ease-in-out infinite; }
 
 .header-model {
   font-size: var(--text-xs);
@@ -109,7 +224,7 @@ body {
   white-space: nowrap;
 }
 
-/* ── Panel Container ──────────────────────────────────────────────────── */
+/* ── Panel Container ─────────────────────────────────────────────────── */
 .panel-container {
   flex: 1;
   position: relative;
@@ -127,27 +242,38 @@ body {
   flex-direction: column;
   background: var(--bg-primary);
   opacity: 0;
-  transform: translateX(20px);
-  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  transition: opacity var(--transition-normal);
 }
 
 .panel.active {
   display: flex;
   opacity: 1;
-  transform: translateX(0);
 }
 
-/* ── Tab Bar ──────────────────────────────────────────────────────────── */
+/* ── Tab Bar ─────────────────────────────────────────────────────────── */
 .tab-bar {
   display: flex;
   height: calc(var(--tab-height) + var(--safe-area-bottom));
   padding-bottom: var(--safe-area-bottom);
-  padding-left: var(--safe-area-left);
-  padding-right: var(--safe-area-right);
+  padding-left: calc(var(--space-xs) + var(--safe-area-left));
+  padding-right: calc(var(--space-xs) + var(--safe-area-right));
   background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-subtle);
   flex-shrink: 0;
   z-index: var(--z-tabbar);
+  position: relative;
+}
+
+/* Subtle gradient accent line above tab bar */
+.tab-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent-blue) 50%, transparent 100%);
+  opacity: 0.2;
 }
 
 .tab-btn {
@@ -162,20 +288,34 @@ body {
   position: relative;
   transition: color var(--transition-fast);
   -webkit-tap-highlight-color: transparent;
+  border-radius: var(--border-radius-sm);
 }
 
 .tab-btn.active {
-  color: var(--accent-bright);
+  color: var(--accent-blue);
+}
+
+/* Active tab indicator pill */
+.tab-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: var(--accent-gradient);
+  border-radius: 4px;
 }
 
 .tab-icon {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
 }
 
 .tab-label {
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.3px;
 }
 
@@ -199,20 +339,21 @@ body {
 
 .tab-badge[hidden] { display: none; }
 
-/* ── Reconnect Banner ─────────────────────────────────────────────────── */
+/* ── Reconnect Banner ────────────────────────────────────────────────── */
 .reconnect-banner {
   position: fixed;
   top: calc(var(--header-height) + var(--safe-area-top));
   left: 0; right: 0;
-  background: var(--warning);
-  color: #000;
+  background: linear-gradient(135deg, rgba(253, 214, 99, 0.95), rgba(255, 185, 0, 0.95));
+  color: var(--bg-primary);
   text-align: center;
   font-size: var(--text-sm);
   font-weight: 600;
   padding: var(--space-sm);
   z-index: var(--z-toast);
   transform: translateY(-100%);
-  transition: transform var(--transition-normal);
+  transition: transform var(--transition-slow);
+  backdrop-filter: blur(10px);
 }
 .reconnect-banner.visible {
   transform: translateY(0);
@@ -232,16 +373,19 @@ body {
 }
 
 .toast {
-  background: var(--bg-elevated);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius);
   padding: var(--space-sm) var(--space-md);
   font-size: var(--text-sm);
   color: var(--text-primary);
   animation: slideUp var(--transition-normal) forwards;
   pointer-events: auto;
+  box-shadow: var(--shadow-md);
 }
-.toast.error   { border-color: var(--error);   color: #ffcdd2; }
-.toast.success { border-color: var(--success);  color: #c8e6c9; }
+.toast.error   { border-color: var(--error);   color: var(--error); }
+.toast.success { border-color: var(--success);  color: var(--success); }
 
 [hidden] { display: none !important; }

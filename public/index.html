@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#1E3A6E">
+  <meta name="theme-color" content="#131314">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AG Mobile">
+  <meta name="apple-mobile-web-app-title" content="Antigravity">
+  <meta name="description" content="Control your Antigravity AI sessions from anywhere — chat, approve agents, switch models, all from your phone.">
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; connect-src 'self' ws: wss: http: https:; img-src 'self' data:; style-src 'self'; script-src 'self'">
+    content="default-src 'self'; connect-src 'self' ws: wss: http: https:; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="stylesheet" href="/css/reset.css">
@@ -17,37 +18,54 @@
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/panels.css">
   <link rel="stylesheet" href="/css/animations.css">
-  <title>AG Mobile Connect</title>
+  <title>Antigravity Mobile</title>
 </head>
 <body>
 
-<!-- ── Login Screen ─────────────────────────────────────────────────────── -->
+<!-- ── Login / Connect Screen ─────────────────────────────────────────── -->
 <div id="login-screen" class="login-screen" hidden>
   <div class="login-card">
-    <div class="login-logo">🤖</div>
-    <h1 class="login-title">AG Mobile Connect</h1>
-    <p class="login-subtitle">Enter the password shown in your terminal</p>
+    <div class="login-logo">
+      <div class="login-logo-mark">A</div>
+    </div>
+    <h1 class="login-title">Antigravity</h1>
+    <p class="login-subtitle">Mobile Connect</p>
 
-    <form id="login-form" autocomplete="off">
-      <div class="form-group">
-        <input
-          type="password"
-          id="login-password"
-          class="input"
-          placeholder="Password"
-          autocomplete="current-password"
-          autofocus
-          required>
+    <!-- Auto-connect status (shown when arriving via token) -->
+    <div id="auto-connect-status" hidden>
+      <div style="text-align: center; padding: 16px 0;">
+        <div class="spinner" style="width: 32px; height: 32px; border-width: 3px; margin: 0 auto 12px;"></div>
+        <p style="font-size: 13px; color: var(--text-secondary);">Connecting…</p>
       </div>
-      <div id="login-error" class="badge badge-error" style="margin-bottom:12px;width:100%;justify-content:center;" hidden></div>
-      <button type="submit" class="btn btn-primary btn-full" id="login-btn">
-        Connect
-      </button>
-    </form>
+    </div>
+
+    <!-- Manual login form -->
+    <div id="manual-login-section">
+      <p style="text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+        Scan the QR code from your terminal,<br>or enter the password below
+      </p>
+
+      <form id="login-form" autocomplete="off">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <input
+            type="password"
+            id="login-password"
+            class="input"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            autofocus
+            required>
+        </div>
+        <div id="login-error" class="badge badge-error" style="margin-bottom:12px;width:100%;justify-content:center;font-size:12px;" hidden></div>
+        <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+          Connect
+        </button>
+      </form>
+    </div>
   </div>
 </div>
 
-<!-- ── App Shell ─────────────────────────────────────────────────────────── -->
+<!-- ── App Shell ──────────────────────────────────────────────────────── -->
 <div id="app-shell" class="app-shell" hidden>
 
   <!-- Reconnect banner -->
@@ -57,7 +75,10 @@
 
   <!-- Header -->
   <header class="app-header">
-    <span class="header-title">AG Mobile</span>
+    <div class="header-brand">
+      <div class="header-logo-mark">A</div>
+      <span class="header-title">Antigravity</span>
+    </div>
     <div class="header-status">
       <span id="header-model" class="header-model"></span>
       <span id="cdp-dot" class="status-dot" title="CDP"></span>
@@ -108,7 +129,7 @@
 
     <!-- Settings Panel -->
     <section id="panel-settings" class="panel settings-panel" data-panel="settings">
-      <div class="section-header">Model &amp; Mode</div>
+      <div class="section-header">Model & Mode</div>
       <div class="card" style="margin:0 16px 16px">
         <div class="form-group">
           <label class="form-label" for="model-select">AI Model</label>
@@ -136,7 +157,7 @@
           <span class="settings-label">Push Notifications</span>
           <button id="push-toggle-btn" class="btn btn-sm btn-ghost">Enable</button>
         </div>
-        <div id="push-status-row" class="settings-row" style="border-top:1px solid var(--border-color)">
+        <div id="push-status-row" class="settings-row" style="border-top:1px solid var(--border-subtle)">
           <span class="settings-label">Status</span>
           <span id="push-status" class="settings-value">Not enabled</span>
         </div>

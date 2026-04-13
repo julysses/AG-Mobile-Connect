@@ -27,9 +27,34 @@ function attachRoutes(app) {
   app.post('/auth/login',  auth.loginHandler);
   app.post('/auth/logout', auth.logoutHandler);
 
+  // Token-based auto-auth (QR code scanning)
+  app.get('/connect', auth.tokenLoginHandler);
+
   // Auth status — bypasses middleware (isPublicPath handles /api/auth/)
   app.get('/api/auth/status', (req, res) => {
     res.json({ authenticated: !!(req.session && req.session.authenticated) });
+  });
+
+  // Generate a fresh auth token (for displaying QR in-app)
+  app.get('/api/auth/token', (req, res) => {
+    // This route requires existing auth to prevent token farming
+    if (!req.session || !req.session.authenticated) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const token = auth.generateAuthToken();
+    res.json({ token });
+  });
+
+  // Connection info (public — used by login screen to show connection help)
+  app.get('/api/auth/connection-info', (req, res) => {
+    const network = require('../utils/network');
+    const localIP = network.getLocalIP();
+    const port    = config.server.port || 3000;
+    res.json({
+      localUrl:  `http://${localIP}:${port}`,
+      tunnelUrl: tunnel.getURL(),
+      password:  config.auth.password || null,
+    });
   });
 
   // ── All routes below require authentication ───────────────────────────────

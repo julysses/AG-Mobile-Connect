@@ -11,9 +11,68 @@ const SESSION_PATH = path.join(DATA_DIR, 'session.json');
 let _password      = null;
 let _sessionSecret = null;
 
+// ── Token-based auto-auth ────────────────────────────────────────────────
+// Map<token, { createdAt, used }>
+const _tokens = new Map();
+const TOKEN_TTL_MS_DEFAULT = 60 * 60 * 1000; // 60 minutes
+
+function getTokenTTL() {
+  const config = require('../config/default.json');
+  const minutes = config.auth.token_ttl_minutes || 60;
+  return minutes * 60 * 1000;
+}
+
+function generateAuthToken() {
+  // Clean expired tokens first
+  cleanExpiredTokens();
+  
+  const token = crypto.randomBytes(16).toString('hex');
+  _tokens.set(token, { createdAt: Date.now(), used: false });
+  logger.info('Generated new auth token');
+  return token;
+}
+
+function validateToken(token) {
+  if (!token || !_tokens.has(token)) return false;
+
+  const entry = _tokens.get(token);
+  const ttl   = getTokenTTL();
+
+  // Check expiry
+  if (Date.now() - entry.createdAt > ttl) {
+    _tokens.delete(token);
+    logger.warn('Auth token expired');
+    return false;
+  }
+
+  // Mark used and remove
+  _tokens.delete(token);
+  logger.info('Auth token validated and consumed');
+  return true;
+}
+
+function cleanExpiredTokens() {
+  const ttl = getTokenTTL();
+  const now = Date.now();
+  for (const [token, entry] of _tokens) {
+    if (now - entry.createdAt > ttl) {
+      _tokens.delete(token);
+    }
+  }
+}
+
+function getActiveToken() {
+  cleanExpiredTokens();
+  // Return the most recent valid token, or generate a new one
+  for (const [token, entry] of _tokens) {
+    if (!entry.used) return token;
+  }
+  return generateAuthToken();
+}
+
 // Routes that bypass authentication entirely
-const PUBLIC_PATHS = new Set(['/', '/login', '/manifest.json', '/sw.js']);
-const PUBLIC_PREFIXES = ['/icons/', '/css/', '/api/auth/'];
+const PUBLIC_PATHS = new Set(['/', '/login', '/connect', '/manifest.json', '/sw.js']);
+const PUBLIC_PREFIXES = ['/icons/', '/css/', '/js/', '/api/auth/'];
 
 function generatePassword() {
   return crypto.randomBytes(8).toString('hex');
@@ -119,6 +178,22 @@ function loginHandler(req, res) {
   res.json({ ok: true, redirect: '/' });
 }
 
+function tokenLoginHandler(req, res) {
+  const { token } = req.query;
+  if (!token) {
+    return res.redirect('/login');
+  }
+
+  if (validateToken(token)) {
+    req.session.authenticated = true;
+    logger.info('Successful token login', { ip: req.ip });
+    return res.redirect('/');
+  }
+
+  logger.warn('Failed token login attempt', { ip: req.ip });
+  return res.redirect('/login?error=token_expired');
+}
+
 function logoutHandler(req, res) {
   req.session = null;
   res.json({ ok: true });
@@ -128,7 +203,11 @@ module.exports = {
   generatePassword,
   getPassword,
   getSessionSecret,
+  generateAuthToken,
+  validateToken,
+  getActiveToken,
   middleware,
   loginHandler,
+  tokenLoginHandler,
   logoutHandler,
 };

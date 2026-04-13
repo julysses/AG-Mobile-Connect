@@ -24,6 +24,16 @@ function showLogin() {
   document.getElementById('login-screen').hidden = false;
   document.getElementById('app-shell').hidden    = true;
 
+  // Check if URL has an error param (expired token)
+  const params = new URLSearchParams(location.search);
+  if (params.get('error') === 'token_expired') {
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = 'Connection link expired. Enter password below.';
+    errEl.hidden = false;
+    // Clean URL
+    history.replaceState({}, '', '/');
+  }
+
   const form  = document.getElementById('login-form');
   const errEl = document.getElementById('login-error');
 

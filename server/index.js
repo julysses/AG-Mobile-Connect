@@ -48,10 +48,10 @@ async function start() {
       directives: {
         defaultSrc:  ["'self'"],
         scriptSrc:   ["'self'"],
-        styleSrc:    ["'self'"],
+        styleSrc:    ["'self'", 'https://fonts.googleapis.com'],
         imgSrc:      ["'self'", 'data:'],
         connectSrc:  ["'self'", 'ws:', 'wss:', 'https:'],
-        fontSrc:     ["'self'"],
+        fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
         objectSrc:   ["'none'"],
       },
     },
@@ -142,8 +142,11 @@ async function start() {
   const localIP  = network.getLocalIP();
   const localUrl = `http://${localIP}:${port}`;
 
-  saveSession({ localUrl, tunnelUrl, password });
-  await printQRCodes(localUrl, tunnelUrl, password);
+  // Generate auth token for QR codes (scan = instant login)
+  const authToken = auth.getActiveToken();
+
+  saveSession({ localUrl, tunnelUrl, password, token: authToken });
+  await printQRCodes(localUrl, tunnelUrl, password, authToken);
 
   // ── Graceful shutdown ─────────────────────────────────────────────────────
   function shutdown(signal) {
