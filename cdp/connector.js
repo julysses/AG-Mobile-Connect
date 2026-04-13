@@ -79,19 +79,14 @@ class CDPConnector extends EventEmitter {
     if (this._shutdownFlag) return;
 
     this._retries++;
-    if (this._retries > config.cdp.max_retries) {
-      logger.error('Max CDP reconnect attempts reached');
-      health.setState('cdp', 'error');
-      this.emit('error', new Error('Max CDP reconnect attempts reached'));
-      return;
-    }
 
-    // Exponential backoff: 2s, 4s, 8s, 16s, 30s cap
+    // Exponential backoff capped at 30s — but never stop retrying.
+    // Antigravity may start after the bridge, or restart at any time.
     const base  = config.cdp.reconnect_interval_ms || 2000;
     const delay = Math.min(base * Math.pow(1.5, this._retries - 1), 30000);
 
     health.setState('cdp', 'connecting');
-    logger.info(`Reconnecting to CDP in ${Math.round(delay / 1000)}s...`);
+    logger.info(`Reconnecting to CDP in ${Math.round(delay / 1000)}s... (attempt ${this._retries})`);
 
     setTimeout(() => this._doConnect(), delay);
   }

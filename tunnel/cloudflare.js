@@ -101,25 +101,24 @@ class CloudflareManager extends EventEmitter {
   }
 
   _scheduleRestart() {
-    if (this._restarts >= (config.tunnel.max_restarts || 5)) {
-      logger.error(`Max tunnel restarts (${config.tunnel.max_restarts}) reached`);
-      health.setState('tunnel', 'error');
-      this.emit('error', new Error('Max tunnel restarts reached'));
-      return;
-    }
+    if (this._stopping) return;
 
-    const delay = config.tunnel.restart_delay_ms || 5000;
+    // Never give up — cloudflared may have a transient network hiccup.
+    // Reset _restarts to 0 after a successful restart so the counter
+    // doesn't creep up and starve future recovery attempts.
     this._restarts++;
+    const delay = config.tunnel.restart_delay_ms || 5000;
     logger.info(`Restarting tunnel in ${delay}ms (attempt ${this._restarts})`);
 
     setTimeout(async () => {
       try {
         const url = await this._spawn();
+        this._restarts = 0;         // reset on success
         logger.success(`Tunnel restarted: ${url}`);
         this.emit('restarted', url);
       } catch (err) {
         logger.error('Tunnel restart failed', { err: err.message });
-        this._scheduleRestart();
+        this._scheduleRestart();    // keep trying
       }
     }, delay);
   }

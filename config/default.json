@@ -8,13 +8,11 @@
     "port": 9000,
     "host": "localhost",
     "reconnect_interval_ms": 2000,
-    "max_retries": 10,
     "snapshot_debounce_ms": 150
   },
   "tunnel": {
     "enabled": true,
     "type": "cloudflare",
-    "max_restarts": 5,
     "restart_delay_ms": 5000
   },
   "auth": {

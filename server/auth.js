@@ -47,7 +47,34 @@ function getPassword() {
 
 function getSessionSecret() {
   if (_sessionSecret) return _sessionSecret;
-  _sessionSecret = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+
+  // Prefer explicit environment variable (survives restarts without any file I/O)
+  if (process.env.SESSION_SECRET) {
+    _sessionSecret = process.env.SESSION_SECRET;
+    return _sessionSecret;
+  }
+
+  // Try to load a previously-persisted secret so existing mobile cookies stay valid
+  if (fs.existsSync(SESSION_PATH)) {
+    try {
+      const saved = JSON.parse(fs.readFileSync(SESSION_PATH, 'utf8'));
+      if (saved.sessionSecret) {
+        _sessionSecret = saved.sessionSecret;
+        logger.debug('Loaded persisted session secret');
+        return _sessionSecret;
+      }
+    } catch (_) { /* ignore – will generate a new one below */ }
+  }
+
+  // First run: generate and persist so the next restart reuses the same secret
+  _sessionSecret = crypto.randomBytes(32).toString('hex');
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  let existing = {};
+  if (fs.existsSync(SESSION_PATH)) {
+    try { existing = JSON.parse(fs.readFileSync(SESSION_PATH, 'utf8')); } catch (_) {}
+  }
+  fs.writeFileSync(SESSION_PATH, JSON.stringify({ ...existing, sessionSecret: _sessionSecret }, null, 2));
+  logger.debug('Generated and persisted new session secret');
   return _sessionSecret;
 }
 
