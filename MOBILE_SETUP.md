@@ -11,6 +11,14 @@ You need two things installed on your Mac:
 - **Node.js** — download from [nodejs.org](https://nodejs.org) (click the green LTS button, install like any app)
 - **AG Mobile Connect** — the folder you already have
 
+> **Required every time:** Antigravity must be launched with a remote debug flag so the bridge can read its screen. Run this command before starting the bridge:
+>
+> ```bash
+> open -a Antigravity --args --remote-debugging-port=9000
+> ```
+>
+> If Antigravity is already open without this flag, quit it (`Cmd+Q`) then run the command above.
+
 ---
 
 ## Step 1 — Start the Bridge
@@ -134,6 +142,16 @@ Your phone now shows all of Antigravity's panels in real time.
 ---
 
 ## Every Time After That
+
+**Step 1 — Launch Antigravity in debug mode** (required every time):
+
+```bash
+open -a Antigravity --args --remote-debugging-port=9000
+```
+
+> Already open? Quit it first (`Cmd+Q`), then run the command above.
+
+**Step 2 — Start the bridge:**
 
 **Double-click** `ag_mobile_connect.command` — or paste this into Terminal:
 
