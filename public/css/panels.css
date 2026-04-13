@@ -1,0 +1,267 @@
+/* ══════════════════════════════════════════════════════
+   CHAT PANEL
+══════════════════════════════════════════════════════ */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.chat-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  padding-bottom: var(--space-sm);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.chat-textarea-wrap {
+  flex: 1;
+  position: relative;
+}
+
+#chat-input {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.queue-indicator {
+  padding: var(--space-xs) var(--space-md);
+  background: rgba(33,150,243,.08);
+  border-top: 1px solid var(--info);
+  font-size: var(--text-sm);
+  color: var(--info);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: typing 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── AG Content snapshot rendering ────────────────────────────────────── */
+.panel-snapshot {
+  padding: var(--space-md);
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.panel-snapshot pre,
+.panel-snapshot code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  background: var(--bg-surface);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.panel-snapshot pre {
+  padding: var(--space-sm);
+  overflow-x: auto;
+  white-space: pre;
+  margin: var(--space-xs) 0;
+}
+
+/* ══════════════════════════════════════════════════════
+   AGENTS PANEL
+══════════════════════════════════════════════════════ */
+.agents-list {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.agent-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.agent-card.waiting-approval {
+  border-color: var(--warning);
+  animation: pulse-border 2s infinite;
+}
+
+.agent-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+}
+
+.agent-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-meta {
+  padding: 0 var(--space-md) var(--space-sm);
+  display: flex;
+  gap: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.agent-context {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ══════════════════════════════════════════════════════
+   SETTINGS PANEL
+══════════════════════════════════════════════════════ */
+.settings-panel {
+  padding: 0 0 var(--space-xl);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  gap: var(--space-md);
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid var(--border-color);
+}
+
+.settings-label {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.settings-value {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  text-align: right;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* ══════════════════════════════════════════════════════
+   TERMINAL PANEL
+══════════════════════════════════════════════════════ */
+.terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  background: #0a0f18;
+  color: #c5d8e8;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.terminal-output .ansi-red     { color: #f44336; }
+.terminal-output .ansi-green   { color: #4caf50; }
+.terminal-output .ansi-yellow  { color: #ffeb3b; }
+.terminal-output .ansi-blue    { color: #2196f3; }
+.terminal-output .ansi-magenta { color: #e040fb; }
+.terminal-output .ansi-cyan    { color: #00bcd4; }
+.terminal-output .ansi-white   { color: #ffffff; }
+.terminal-output .ansi-bold    { font-weight: 700; }
+.terminal-output .ansi-dim     { opacity: 0.6; }
+.terminal-output .line-error   { color: #f44336; }
+
+.terminal-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.terminal-search {
+  flex: 1;
+}
+
+.scroll-to-bottom-btn {
+  position: absolute;
+  bottom: var(--space-md);
+  right: var(--space-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+
+/* ══════════════════════════════════════════════════════
+   FILES PANEL
+══════════════════════════════════════════════════════ */
+.files-list {
+  padding: var(--space-sm) 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  min-height: var(--touch-target);
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.file-item:active { background: var(--bg-surface); }
+
+.file-icon { font-size: 16px; flex-shrink: 0; }
+.file-name { font-size: var(--text-sm); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-meta { font-size: var(--text-xs); color: var(--text-muted); }

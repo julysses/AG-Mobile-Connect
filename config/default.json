@@ -1,0 +1,38 @@
+{
+  "server": {
+    "port": 3000,
+    "host": "0.0.0.0",
+    "https": true
+  },
+  "cdp": {
+    "port": 9000,
+    "host": "localhost",
+    "reconnect_interval_ms": 2000,
+    "max_retries": 10,
+    "snapshot_debounce_ms": 150
+  },
+  "tunnel": {
+    "enabled": true,
+    "type": "cloudflare",
+    "max_restarts": 5,
+    "restart_delay_ms": 5000
+  },
+  "auth": {
+    "password": "",
+    "cookie_name": "agmc_session",
+    "cookie_ttl_hours": 24
+  },
+  "push": {
+    "enabled": true,
+    "subject": "mailto:admin@ag-mobile-connect.local"
+  },
+  "sync": {
+    "use_websocket": true,
+    "poll_fallback_ms": 1000,
+    "observer_heartbeat_ms": 10000
+  },
+  "panels": {
+    "default": "chat",
+    "available": ["chat", "agents", "settings", "terminal", "files"]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "models": [
+    { "id": "gemini-2.5-pro",   "label": "Gemini 2.5 Pro",    "category": "google",    "supports_vision": true },
+    { "id": "gemini-2.5-flash", "label": "Gemini 2.5 Flash",  "category": "google",    "supports_vision": true },
+    { "id": "gemini-2.0-pro",   "label": "Gemini 2.0 Pro",    "category": "google",    "supports_vision": true },
+    { "id": "claude-sonnet-4-5","label": "Claude Sonnet 4.5", "category": "anthropic", "supports_vision": true },
+    { "id": "claude-opus-4",    "label": "Claude Opus 4",     "category": "anthropic", "supports_vision": true },
+    { "id": "gpt-4o",           "label": "GPT-4o",            "category": "openai",    "supports_vision": true },
+    { "id": "o3",               "label": "OpenAI o3",         "category": "openai",    "supports_vision": false },
+    { "id": "auto",             "label": "Auto (AG selects)", "category": "auto",      "supports_vision": true }
+  ],
+  "modes": [
+    { "id": "fast",     "label": "Fast" },
+    { "id": "planning", "label": "Planning" }
+  ]
+}

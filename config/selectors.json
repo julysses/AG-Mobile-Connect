@@ -1,0 +1,37 @@
+{
+  "chat": {
+    "message_container": "#chat-messages, .conversation-container, div[class*='chat'], div[class*='conversation']",
+    "message_item": ".message, .chat-message, div[class*='message']",
+    "stop_button": "button[data-action='stop'], .stop-generation-btn, button[class*='stop']",
+    "send_button": "button[data-action='send'], .send-btn, button[class*='send']",
+    "input_box": "textarea#chat-input, .chat-input textarea, textarea[class*='input']",
+    "approval_allow": "button[data-action='allow'], button:not([disabled])",
+    "approval_deny": "button[data-action='deny']",
+    "approval_allow_once": "button[data-action='allow_once']",
+    "approval_review": "button[data-action='review']",
+    "approval_apply": "button[data-action='apply']",
+    "approval_save": "button[data-action='save']",
+    "new_conversation": "button[data-action='new'], button[class*='new-chat'], button[class*='new-conversation']"
+  },
+  "agents": {
+    "panel_container": ".agent-manager, #agents-panel, div[class*='agent'], div[class*='session'], div[class*='manager']",
+    "agent_item": ".agent-item, .agent-card, div[class*='agent-item'], div[class*='session-item']",
+    "agent_name": ".agent-name, div[class*='agent-name']",
+    "agent_status": ".agent-status, div[class*='agent-status']"
+  },
+  "model": {
+    "selector": "select#model-selector, .model-dropdown select, select[class*='model'], div[class*='model-select'] select",
+    "mode_selector": "select#mode-selector, .mode-dropdown select, select[class*='mode'], div[class*='mode-select'] select"
+  },
+  "settings": {
+    "panel_container": "div[class*='settings'], div[class*='model-select'], #settings-panel"
+  },
+  "terminal": {
+    "container": ".terminal-container, #terminal-panel, div[class*='terminal'], div[class*='xterm']",
+    "output": ".terminal-output, .xterm-viewport, div[class*='terminal-output']"
+  },
+  "files": {
+    "container": ".files-panel, #files-container, div[class*='file-tree'], div[class*='explorer']",
+    "file_item": ".file-item, div[class*='file-item']"
+  }
+}
