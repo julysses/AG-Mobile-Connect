@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Antigravity">
   <meta name="description" content="Control your Antigravity AI sessions from anywhere — chat, approve agents, switch models, all from your phone.">
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; connect-src 'self' ws: wss: http: https:; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'">
+    content="default-src 'self'; connect-src 'self' ws: wss: http: https:; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; object-src 'none'">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="stylesheet" href="/css/reset.css">
@@ -125,7 +125,7 @@
             </button>
           </div>
           <div class="toolbar-right">
-            <button class="toolbar-btn btn-mic" title="Voice input">🎤</button>
+            <button id="chat-mic-btn" class="toolbar-btn btn-mic" title="Voice input">🎤</button>
             <button id="chat-send" class="toolbar-btn btn-send" aria-label="Send">➤</button>
             <button id="chat-stop" class="toolbar-btn btn-stop" aria-label="Stop" hidden>■</button>
           </div>
@@ -207,6 +207,13 @@
     <section id="panel-terminal" class="panel" data-panel="terminal">
       <div class="terminal-toolbar">
         <input type="search" id="terminal-search" class="input terminal-search" placeholder="Search…" style="min-height:34px;font-size:13px">
+      </div>
+      <div class="terminal-chips">
+        <button class="chip" data-cmd="ls -la">ls -la</button>
+        <button class="chip" data-cmd="git status">git status</button>
+        <button class="chip" data-cmd="npm run dev">npm run dev</button>
+        <button class="chip" data-cmd="npm test">npm test</button>
+        <button class="chip" data-cmd="clear">clear</button>
       </div>
       <div id="terminal-output" class="terminal-output"></div>
       <button id="scroll-bottom-btn" class="scroll-to-bottom-btn btn" hidden>↓</button>

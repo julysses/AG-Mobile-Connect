@@ -46,13 +46,14 @@ async function start() {
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc:  ["'self'"],
-        scriptSrc:   ["'self'"],
-        styleSrc:    ["'self'", 'https://fonts.googleapis.com'],
-        imgSrc:      ["'self'", 'data:'],
-        connectSrc:  ["'self'", 'ws:', 'wss:', 'https:'],
-        fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
-        objectSrc:   ["'none'"],
+        defaultSrc:            ["'self'"],
+        scriptSrc:             ["'self'"],
+        styleSrc:              ["'self'", 'https://fonts.googleapis.com'],
+        imgSrc:                ["'self'", 'data:'],
+        connectSrc:            ["'self'", 'ws:', 'wss:', 'http:', 'https:'],
+        fontSrc:               ["'self'", 'https://fonts.gstatic.com'],
+        objectSrc:             ["'none'"],
+        upgradeInsecureRequests: null,
       },
     },
     crossOriginEmbedderPolicy: false,
