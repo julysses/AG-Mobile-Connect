@@ -78,7 +78,7 @@ When setup is complete you'll see something like this in the terminal:
 
   [QR CODE]                  [QR CODE]
 
-  https://abc123.trycloudflare.com    https://192.168.1.42:3000
+  https://abc123.trycloudflare.com    http://192.168.1.42:3000
 
   Password: a1b2c3d4e5f6g7h8
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -165,8 +165,8 @@ Your phone app reconnects automatically.
 
 ## Troubleshooting
 
-**"Can't connect" or browser shows a security warning**
-This happens with the local Wi-Fi QR. Tap **Advanced** → **Proceed anyway** (or **Visit this website**). This is expected — the local connection uses a self-signed certificate. The Cloudflare QR (left QR) never shows this warning.
+**"Can't connect" on local Wi-Fi**
+Make sure your phone is on the same Wi-Fi network as your Mac. The local URL starts with `http://` (no certificate warning). If the connection still fails, use the left QR code (Cloudflare tunnel) which works on any network including mobile data.
 
 **App shows "Reconnecting…"**
 Your Mac went to sleep or the server restarted. Double-click the launcher again. The app reconnects in a few seconds.

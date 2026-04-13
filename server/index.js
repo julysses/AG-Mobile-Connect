@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-const https        = require('https');
+const http         = require('http');
 const express      = require('express');
 const helmet       = require('helmet');
 const cookieSession = require('cookie-session');
@@ -12,7 +12,6 @@ const fs           = require('fs');
 const logger      = require('../utils/logger').child('Server');
 const health      = require('../utils/health');
 const network     = require('../utils/network');
-const { getCerts }     = require('../utils/certs');
 const { printQRCodes, saveSession } = require('../utils/qr');
 const auth        = require('./auth');
 const attachRoutes = require('./routes');
@@ -22,6 +21,7 @@ const observer    = require('../cdp/observer');
 const tunnel      = require('../tunnel/cloudflare');
 const vapid       = require('../push/vapid');
 const subscriptions = require('../push/subscriptions');
+const notify      = require('../push/notify');
 
 const config = require('../config/default.json');
 
@@ -32,10 +32,7 @@ async function start() {
   const password = auth.getPassword();
   logger.info('Auth ready');
 
-  // ── 2. SSL Certs ─────────────────────────────────────────────────────────
-  const certs = getCerts();
-
-  // ── 3. Push ───────────────────────────────────────────────────────────────
+  // ── 2. Push ───────────────────────────────────────────────────────────────
   vapid.init();
   subscriptions.load();
 
@@ -53,23 +50,25 @@ async function start() {
         scriptSrc:   ["'self'"],
         styleSrc:    ["'self'"],
         imgSrc:      ["'self'", 'data:'],
-        connectSrc:  ["'self'", 'wss:', 'https:'],
+        connectSrc:  ["'self'", 'ws:', 'wss:', 'https:'],
         fontSrc:     ["'self'"],
         objectSrc:   ["'none'"],
-        upgradeInsecureRequests: [],
       },
     },
     crossOriginEmbedderPolicy: false,
   }));
 
   // Cookie session
+  // secure:false so cookies work over plain HTTP on local WiFi.
+  // The Cloudflare tunnel provides HTTPS externally, so push/PWA features
+  // still work when accessed via the tunnel URL.
   app.use(cookieSession({
     name:     config.auth.cookie_name || 'agmc_session',
     secret:   auth.getSessionSecret(),
     maxAge:   (config.auth.cookie_ttl_hours || 24) * 3600 * 1000,
     httpOnly: true,
-    secure:   true,
-    sameSite: 'strict',
+    secure:   false,
+    sameSite: 'lax',
   }));
 
   app.use(express.json());
@@ -97,21 +96,23 @@ async function start() {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
   });
 
-  // ── 5. HTTPS server ───────────────────────────────────────────────────────
-  const port = config.server.port || 3000;
-  const httpsServer = https.createServer({ key: certs.key, cert: certs.cert }, app);
+  // ── 5. HTTP server ────────────────────────────────────────────────────────
+  // Plain HTTP — Cloudflare provides HTTPS externally; local WiFi connects
+  // directly without the self-signed certificate warning.
+  const port   = config.server.port || 3000;
+  const server = http.createServer(app);
 
   // ── 6. WebSocket ──────────────────────────────────────────────────────────
-  createWebSocketServer(httpsServer);
+  createWebSocketServer(server);
 
   // ── 7. Start listening ────────────────────────────────────────────────────
   await new Promise((resolve, reject) => {
-    httpsServer.listen(port, config.server.host || '0.0.0.0', resolve);
-    httpsServer.once('error', reject);
+    server.listen(port, config.server.host || '0.0.0.0', resolve);
+    server.once('error', reject);
   });
 
   health.setState('server', 'running');
-  logger.success(`HTTPS server listening on port ${port}`);
+  logger.success(`HTTP server listening on port ${port}`);
 
   // ── 8. CDP ────────────────────────────────────────────────────────────────
   try {
@@ -139,7 +140,7 @@ async function start() {
 
   // ── 10. QR codes ──────────────────────────────────────────────────────────
   const localIP  = network.getLocalIP();
-  const localUrl = `https://${localIP}:${port}`;
+  const localUrl = `http://${localIP}:${port}`;
 
   saveSession({ localUrl, tunnelUrl, password });
   await printQRCodes(localUrl, tunnelUrl, password);
@@ -150,7 +151,7 @@ async function start() {
     tunnel.stop();
     connector.disconnect();
     observer.stop();
-    httpsServer.close(() => {
+    server.close(() => {
       logger.info('Server closed');
       process.exit(0);
     });
