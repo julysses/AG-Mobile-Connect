@@ -51,7 +51,10 @@ export function initPanelRouter() {
   wsClient.on('agent_update', (msg) => agentsPanel.onAgentUpdate(msg.agents));
 
   // Model/mode change
-  wsClient.on('model_changed', (msg) => settingsPanel.onModelChanged(msg));
+  wsClient.on('model_changed', (msg) => {
+    settingsPanel.onModelChanged?.(msg);
+    chatPanel.onModelChanged?.(msg);
+  });
 
   // Tunnel URL update
   wsClient.on('tunnel_url', (msg) => {

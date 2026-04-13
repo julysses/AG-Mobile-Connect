@@ -155,6 +155,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const authed = await checkAuth();
   if (authed) {
     showApp();
+    
+    // Initial data fetch to sync UI
+    fetch('/api/models')
+      .then(r => r.json())
+      .then(data => {
+        const status = { model: data.models?.[0]?.id, mode: 'fast' };
+        chatPanel.onModelChanged(status);
+        settingsPanel.onModelChanged(status);
+      })
+      .catch(() => {});
   } else {
     showLogin();
   }

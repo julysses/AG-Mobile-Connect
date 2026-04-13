@@ -6,6 +6,7 @@ let _queuedMsg  = null;
 const QUEUE_SEND_DELAY = 1500;
 
 let elSnapshot, elApproval, elTyping, elInput, elSend, elStop, elQueue, elQueueText, elQueueCancel;
+let elPlanningBtn, elModelBtn, elModelLabel;
 
 function init() {
   elSnapshot    = document.getElementById('chat-snapshot');
@@ -18,13 +19,36 @@ function init() {
   elQueueText   = document.getElementById('chat-queue-text');
   elQueueCancel = document.getElementById('chat-queue-cancel');
 
+  elPlanningBtn = document.getElementById('chat-planning-btn');
+  elModelBtn    = document.getElementById('chat-model-btn');
+  elModelLabel  = document.getElementById('chat-model-label');
+
   elSend.addEventListener('click', handleSend);
-  elStop.addEventListener('click', () => actions.stopGeneration());
+  if (elStop) elStop.addEventListener('click', () => actions.stopGeneration());
   elInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   });
   elInput.addEventListener('input', autoResize);
   elQueueCancel.addEventListener('click', clearQueue);
+
+  elPlanningBtn.addEventListener('click', togglePlanning);
+  elModelBtn.addEventListener('click', showModelSelector);
+}
+
+function togglePlanning() {
+  const isPlanning = elPlanningBtn.classList.contains('active');
+  const nextMode   = isPlanning ? 'fast' : 'planning';
+  actions.switchMode(nextMode).catch(console.error);
+}
+
+function showModelSelector() {
+  // Simple approach: trigger the click or focus on the hidden select in settings
+  // or better, just cycle through them or show a simple choice
+  const select = document.getElementById('model-select');
+  if (select) {
+    select.focus();
+    select.click(); // Some browsers allow this to open dropdown
+  }
 }
 
 function autoResize() {
@@ -80,9 +104,9 @@ export const chatPanel = {
   onGenerationComplete() {
     _generating = false;
     elTyping.hidden = true;
-    elSend.hidden   = false;
-    elStop.hidden   = true;
-    elInput.placeholder = 'Message Antigravity…';
+    if (elSend) elSend.hidden = false;
+    if (elStop) elStop.hidden = true;
+    elInput.placeholder = 'Ask anything...';
     elApproval.hidden   = true;
 
     // Send queued message
@@ -92,6 +116,23 @@ export const chatPanel = {
       setTimeout(() => {
         actions.sendMessage(msg).catch(console.error);
       }, QUEUE_SEND_DELAY);
+    }
+  },
+
+  onModelChanged(data) {
+    if (elModelLabel && data.model) {
+      // Find model label from settings list if possible, or just use ID
+      const select = document.getElementById('model-select');
+      if (select) {
+        const opt = [...select.options].find(o => o.value === data.model);
+        elModelLabel.textContent = opt ? opt.textContent : data.model;
+      } else {
+        elModelLabel.textContent = data.model;
+      }
+    }
+    
+    if (elPlanningBtn && data.mode) {
+      elPlanningBtn.classList.toggle('active', data.mode === 'planning');
     }
   },
 

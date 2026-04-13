@@ -30,22 +30,31 @@ function renderFiles(html) {
     return;
   }
 
-  // Parse file names from snapshot HTML
+  // Parse file names from snapshot HTML (supporting various IDE snapshot structures)
   const tmp   = document.createElement('div');
   tmp.innerHTML = html;
-  const items = tmp.querySelectorAll('[class*="file-item"], [class*="file-name"], [class*="tree-item"]');
+  
+  // IDE Snapshot usually uses .label-name or .p-TreeViewNode-label
+  const items = tmp.querySelectorAll('[class*="file-item"], [class*="file-name"], [class*="tree-item"], [class*="label-name"], [class*="TreeViewNode"]');
 
   if (items.length === 0) {
-    elList.innerHTML = `<div class="panel-snapshot">${html}</div>`;
+    // If we can't parse it into a list, show the raw snapshot but keep it themed
+    elList.innerHTML = `<div class="panel-snapshot explorer-fallback">${html}</div>`;
     return;
   }
 
-  elList.innerHTML = '';
+  elList.innerHTML = '<div class="files-panel-header">Explorer</div>';
+  const listWrap = document.createElement('div');
+  listWrap.className = 'files-list';
+
   items.forEach(item => {
     const name    = item.textContent.trim();
     if (!name) return;
+    const ext     = (name.split('.').pop() || '').toLowerCase();
+    
     const row     = document.createElement('div');
     row.className = 'file-item';
+    row.dataset.ext = ext;
 
     const icon     = document.createElement('span');
     icon.className = 'file-icon';
@@ -59,13 +68,12 @@ function renderFiles(html) {
     row.appendChild(label);
 
     row.addEventListener('click', () => {
-      // Show simple detail toast
-      const ext = name.split('.').pop();
       showFileDetail(name, ext);
     });
 
-    elList.appendChild(row);
+    listWrap.appendChild(row);
   });
+  elList.appendChild(listWrap);
 }
 
 function showFileDetail(name) {

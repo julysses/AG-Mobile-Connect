@@ -103,17 +103,33 @@
         <span id="chat-queue-text">⏳ Queued message</span>
         <button class="btn btn-sm btn-ghost" id="chat-queue-cancel">Cancel</button>
       </div>
-      <div class="chat-input-row">
+      <div class="chat-input-container">
         <div class="chat-textarea-wrap">
           <textarea
             id="chat-input"
             class="textarea"
-            placeholder="Message Antigravity…"
+            placeholder="Ask anything..."
             rows="1"
             aria-label="Message input"></textarea>
         </div>
-        <button id="chat-send"  class="btn btn-primary btn-icon" aria-label="Send">➤</button>
-        <button id="chat-stop"  class="btn btn-danger  btn-icon" aria-label="Stop" hidden>■</button>
+        <div class="chat-toolbar">
+          <div class="toolbar-left">
+            <button class="toolbar-btn btn-plus" title="Add attachment">+</button>
+            <button id="chat-planning-btn" class="toolbar-pill" title="Toggle Planning Mode">
+              <span class="pill-label">Planning</span>
+              <span class="chevron">⌄</span>
+            </button>
+            <button id="chat-model-btn" class="toolbar-pill" title="Select Model">
+              <span id="chat-model-label" class="pill-label">Loading...</span>
+              <span class="chevron">⌄</span>
+            </button>
+          </div>
+          <div class="toolbar-right">
+            <button class="toolbar-btn btn-mic" title="Voice input">🎤</button>
+            <button id="chat-send" class="toolbar-btn btn-send" aria-label="Send">➤</button>
+            <button id="chat-stop" class="toolbar-btn btn-stop" aria-label="Stop" hidden>■</button>
+          </div>
+        </div>
       </div>
     </section>
 
