@@ -19,9 +19,10 @@
   display: flex;
   align-items: flex-end;
   gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  padding-bottom: var(--space-sm);
-  background: var(--bg-secondary);
+  padding: var(--space-sm) calc(var(--space-md) + var(--safe-area-right)) calc(var(--space-sm) + var(--safe-area-bottom)) calc(var(--space-md) + var(--safe-area-left));
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border-subtle);
   flex-shrink: 0;
 }

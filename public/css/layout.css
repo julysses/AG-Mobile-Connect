@@ -153,11 +153,14 @@ body {
   padding-top: var(--safe-area-top);
   padding-left: calc(var(--space-md) + var(--safe-area-left));
   padding-right: calc(var(--space-md) + var(--safe-area-right));
-  background: var(--bg-secondary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
   z-index: var(--z-header);
   position: relative;
+  user-select: none;
 }
 
 /* Subtle gradient accent line under header */
@@ -257,11 +260,14 @@ body {
   padding-bottom: var(--safe-area-bottom);
   padding-left: calc(var(--space-xs) + var(--safe-area-left));
   padding-right: calc(var(--space-xs) + var(--safe-area-right));
-  background: var(--bg-secondary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border-subtle);
   flex-shrink: 0;
   z-index: var(--z-tabbar);
   position: relative;
+  user-select: none;
 }
 
 /* Subtle gradient accent line above tab bar */
@@ -289,6 +295,7 @@ body {
   transition: color var(--transition-fast);
   -webkit-tap-highlight-color: transparent;
   border-radius: var(--border-radius-sm);
+  user-select: none;
 }
 
 .tab-btn.active {
